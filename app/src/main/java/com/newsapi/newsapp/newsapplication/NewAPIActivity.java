@@ -20,11 +20,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.newsapi.newsapp.newsapplication.fragments.HomeFragment;
-import com.newsapi.newsapp.newsapplication.model.NewsPaperArray;
+import com.newsapi.newsapp.newsapplication.model.Source;
+
+import java.util.List;
 
 public class NewAPIActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    NewsPaperArray newsPaperArray;
+    List<Source> sources;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class NewAPIActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //   i.putExtra("NewsPaperSources",newsPaperArray);
-        newsPaperArray = DataSingleton.getInstance().getNewsPaperSources();
+        sources = DataSingleton.getInstance().getNewsPaperSources();
         LoadHomeFragment();
     }
 

@@ -1,0 +1,68 @@
+package com.newsapi.newsapp.newsapplication.fragments
+
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.newsapi.newsapp.newsapplication.DataSingleton
+import com.newsapi.newsapp.newsapplication.Listeners.RecyclerViewClickListener
+import com.newsapi.newsapp.newsapplication.R
+import com.newsapi.newsapp.newsapplication.adapters.NewsPaperAdapter
+import com.newsapi.newsapp.newsapplication.model.Article
+import com.newsapi.newsapp.newsapplication.model.Source
+
+class HomeFragment : Fragment(), RecyclerViewClickListener {
+    private lateinit var recyclerView: RecyclerView
+    var layoutManager: LinearLayoutManager? = null
+    var newsPaperList: List<Source>? = emptyList()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.layout_news_paper, container, false)
+        return view
+    }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        newsPaperList = DataSingleton.getInstance().newsPaperSources
+        recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
+        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
+        updateView()
+    }
+
+    fun updateView() {
+        val newsPaperAdapter =
+            activity?.applicationContext?.let { NewsPaperAdapter(newsPaperList?: emptyList(), it, this) }
+        layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = newsPaperAdapter
+    }
+
+    fun setNewsPaperObjects(newsPaperObjects: List<Source>?) {
+        newsPaperList = newsPaperObjects
+    }
+
+    override fun recyclerViewListClicked(v: View?, position: Int) {
+        Log.v("ListView Recyclered>>>", "" + position)
+        val detailedListFragment = DetailedListFragment()
+        detailedListFragment.setNewsPaperSources(position)
+        val fragmentTransaction =
+            parentFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+        fragmentTransaction.replace(R.id.frame_layout, detailedListFragment)
+        fragmentTransaction.commitAllowingStateLoss()
+    }
+}

@@ -1,9 +1,12 @@
 package com.newsapi.newsapp.newsapplication;
 
-import com.newsapi.newsapp.newsapplication.model.NewsPaperArray;
+import com.newsapi.newsapp.newsapplication.model.NewsPaperList;
+import com.newsapi.newsapp.newsapplication.model.Source;
+
+import java.util.List;
 
 public class DataSingleton {
-    private  NewsPaperArray newsPaperArray;
+    private List<Source> newsPaperArray;
 
 
     private static volatile DataSingleton sSoleInstance;
@@ -32,11 +35,11 @@ public class DataSingleton {
         return getInstance();
     }
 
-    protected void setNewsPaperSources(NewsPaperArray newsPaperSources) {
+    protected void setNewsPaperSources(List<Source> newsPaperSources) {
         newsPaperArray = newsPaperSources;
     }
 
-    public NewsPaperArray getNewsPaperSources() {
+    public List<Source> getNewsPaperSources() {
         return newsPaperArray;
     }
 }

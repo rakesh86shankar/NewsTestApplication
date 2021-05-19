@@ -10,11 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.newsapi.newsapp.newsapplication.model.Article;
-import com.newsapi.newsapp.newsapplication.model.ArticleList;
-import com.newsapi.newsapp.newsapplication.model.NewsPaperArray;
 import com.newsapi.newsapp.newsapplication.model.NewsPaperList;
-import com.newsapi.newsapp.newsapplication.model.NewsPaperObject;
+import com.newsapi.newsapp.newsapplication.model.Source;
+import com.newsapi.newsapp.newsapplication.model.SourceList;
 import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel;
 
 import java.util.List;
@@ -59,20 +57,15 @@ public class SplashScreen extends AppCompatActivity {
 
                 }
             });*/
-            articleViewModel.getNewsPaperSources().observe(SplashScreen.this, new Observer<NewsPaperList>() {
+            articleViewModel.getNewsPaperSources().observe(SplashScreen.this, new Observer<SourceList>() {
+
                 @Override
-                public void onChanged(@Nullable NewsPaperList newsPaperList) {
-                    List<NewsPaperObject>  newsPaperObjects = newsPaperList.getSources();
-                    Log.v("newsPaperObjects value",""+newsPaperObjects.size());
-                    NewsPaperArray newsPaperArray = new NewsPaperArray();
-                    newsPaperArray.setNewsPaperObjects(newsPaperObjects);
-                    DataSingleton.getInstance().setNewsPaperSources(newsPaperArray);
+                public void onChanged(SourceList sourceList) {
+                    DataSingleton.getInstance().setNewsPaperSources(sourceList.getSources());
                     Intent i = new Intent(SplashScreen.this, NewAPIActivity.class);
                     startActivity(i);
-
                 }
             });
-
         }catch (Exception e){
             Log.v("Exception in downloading from model",e.getMessage());
         }

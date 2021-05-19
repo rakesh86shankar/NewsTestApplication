@@ -10,18 +10,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.newsapi.newsapp.newsapplication.model.Article;
-import com.newsapi.newsapp.newsapplication.model.ArticleList;
 import com.newsapi.newsapp.newsapplication.model.NewsPaperList;
-import com.newsapi.newsapp.newsapplication.model.NewsPaperObject;
-import com.newsapi.newsapp.newsapplication.network.APIClient;
-import com.newsapi.newsapp.newsapplication.network.APIInterface;
+import com.newsapi.newsapp.newsapplication.model.Source;
+import com.newsapi.newsapp.newsapplication.model.SourceList;
 import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Home extends AppCompatActivity implements LifecycleOwner {
 
@@ -40,19 +34,19 @@ public class Home extends AppCompatActivity implements LifecycleOwner {
 
             //ViewModelProviders.of(this).get(ClickCounterViewModel.class);
             ArticleViewModel articleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
-            articleViewModel.getArticleList("xxx").observe(Home.this, new Observer<ArticleList>() {
+            articleViewModel.getArticleList("Hindu").observe(Home.this, new Observer<NewsPaperList>() {
                 @Override
-                public void onChanged(@Nullable ArticleList articleList) {
+                public void onChanged(@Nullable NewsPaperList articleList) {
                     List<Article>  articles = articleList.getArticles();
                     Log.v("articles value",""+articles.size());
 
                 }
             });
-            articleViewModel.getNewsPaperSources().observe(Home.this, new Observer<NewsPaperList>() {
+            articleViewModel.getNewsPaperSources().observe(Home.this, new Observer<SourceList>() {
                 @Override
-                public void onChanged(@Nullable NewsPaperList newsPaperList) {
-                    List<NewsPaperObject>  newsPaperObjects = newsPaperList.getSources();
-                    Log.v("newsPaperObjects value",""+newsPaperObjects.size());
+                public void onChanged(@Nullable SourceList sourceList) {
+                    SourceList  newsPaperObjects = sourceList;
+                    Log.v("newsPaperObjects value",""+newsPaperObjects.getSources().size());
 
                 }
             });
