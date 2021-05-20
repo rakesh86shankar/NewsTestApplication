@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +16,10 @@ import com.newsapi.newsapp.newsapplication.R
 import com.newsapi.newsapp.newsapplication.adapters.NewsPaperListAdaper
 import com.newsapi.newsapp.newsapplication.model.Article
 import com.newsapi.newsapp.newsapplication.model.NewsPaperList
-import com.newsapi.newsapp.newsapplication.model.Source
-import com.newsapi.newsapp.newsapplication.model.SourceList
-import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel
+import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel1
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailedListFragment : Fragment(),
     RecyclerViewClickListener, LifecycleOwner {
@@ -30,6 +27,7 @@ class DetailedListFragment : Fragment(),
     var newsPaperItemPositon: Int? = 0
     var layoutManager: LinearLayoutManager? = null
     var articleListObjects: List<Article>? = emptyList()
+    private val mViewModel: ArticleViewModel1 by  viewModel()
 
 
     override fun onCreateView(
@@ -53,10 +51,10 @@ class DetailedListFragment : Fragment(),
         recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
         layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
-        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
-        val articleViewModel = ViewModelProviders.of(this).get(
-            ArticleViewModel::class.java
-        )
+        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+//        val articleViewModel = ViewModelProviders.of(this).get(
+//            ArticleViewModel::class.java
+//        )
         val newsSourceId = DataSingleton.getInstance().newsPaperSources[newsPaperItemPositon ?: 0].id
         Log.v("NewsSource>>>",">>"+newsSourceId)
         /*
@@ -70,7 +68,23 @@ class DetailedListFragment : Fragment(),
         })
          */
 
+        /**
+         * Called Without framworkRelated Changes
+         */
+
+        /*
         articleViewModel.getArticleListViaSingle(newsSourceId).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { t1: NewsPaperList?, t2: Throwable? ->
+                    if (t1 != null) {
+                        articleListObjects = t1.articles
+                        updateView()
+                    }
+                    Log.v("Error", "" + t2)
+                }
+
+         */
+        mViewModel.getNewsArticleViaNewsPaperNameId(newsSourceId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { t1: NewsPaperList?, t2: Throwable? ->
                     if (t1 != null) {

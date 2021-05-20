@@ -14,12 +14,20 @@ import com.newsapi.newsapp.newsapplication.Listeners.RecyclerViewClickListener
 import com.newsapi.newsapp.newsapplication.R
 import com.newsapi.newsapp.newsapplication.adapters.NewsPaperAdapter
 import com.newsapi.newsapp.newsapplication.model.Article
+import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.Source
+import com.newsapi.newsapp.newsapplication.model.SourceList
+import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel1
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment(), RecyclerViewClickListener {
     private lateinit var recyclerView: RecyclerView
     var layoutManager: LinearLayoutManager? = null
     var newsPaperList: List<Source>? = emptyList()
+    private val mViewModel: ArticleViewModel1 by  viewModel()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,10 +42,23 @@ class HomeFragment : Fragment(), RecyclerViewClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        newsPaperList = DataSingleton.getInstance().newsPaperSources
+        //newsPaperList = DataSingleton.getInstance().newsPaperSources
         recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
-        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
-        updateView()
+        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        listenToViewModel()
+        //updateView()
+    }
+
+
+    private fun listenToViewModel() {
+        mViewModel.getNewsFeedFromSources().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe { t1: SourceList?, t2: Throwable? ->
+            if (t1 != null) {
+                newsPaperList = t1.sources
+                updateView()
+            }
+            Log.v("Error", "" + t2)
+        }
     }
 
     fun updateView() {
