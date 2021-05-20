@@ -4,6 +4,8 @@ import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.Source
 import com.newsapi.newsapp.newsapplication.model.SourceList
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.SingleObserver
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -34,4 +36,12 @@ interface APIInterface {
     fun getArticleList(
             @Query("sources") newspaperName: String?,
             @Query("apikey") apiKey: String?): Call<NewsPaperList>
+
+    @GET("/v2/everything")
+    fun getArticleListViaSingle(
+            @Query("sources") newspaperName: String?,
+            @Query("apikey") apiKey: String?): Single<NewsPaperList>
+
+    @GET("/v2/sources")
+    fun getNewsPaperSourcesViaSingle(@Query("apikey") apiKey: String?): Single<SourceList>
 }

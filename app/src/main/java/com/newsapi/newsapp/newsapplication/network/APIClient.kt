@@ -5,19 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.SourceList
+import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Created by rakesh sankar on 9/12/2017.
  */
 class APIClient {
-    fun downloadArticleList(paperName: String?) {
+    fun downloadArticleList(paperName: String?):MutableLiveData<NewsPaperList?> {
         try {
             val apiService = client!!.create(APIInterface::class.java)
             val call = apiService.getArticleList("associated-press", APIKey)
@@ -35,6 +37,7 @@ class APIClient {
         } catch (e: Exception) {
             Log.v("Exception in getting Article Information", e.message!!)
         }
+        return articleListMutableLiveData
     }
 
     fun getNewsPaperResources(): MutableLiveData<SourceList?> {
@@ -59,6 +62,17 @@ class APIClient {
         return newsPaperListMutableLiveData
     }
 
+    fun getNewsPaperResourcesViaSingle(): Single<SourceList> {
+        val apiService = client?.create(APIInterface::class.java)
+        return apiService?.getNewsPaperSourcesViaSingle(APIKey) ?: Single.just(SourceList.empty())
+    }
+
+    fun downloadArticleListViaSingle(paperName: String?): Single<NewsPaperList> {
+        val apiService = client?.create(APIInterface::class.java)
+        return apiService?.getArticleListViaSingle(paperName, APIKey) ?: Single.just(NewsPaperList.empty())
+    }
+
+
     companion object {
         const val ROOT_URL = "https://newsapi.org/v2/"
         var APIKey = "a3b94d1e4cab435d8096cc0f20060b96" //"a3b94d1e4cab435d8096cc0f20060b96";//a3b94d1e4cab435d8096cc0f20060b96
@@ -75,6 +89,7 @@ class APIClient {
                         .create()
                 retrofit = Retrofit.Builder()
                         .baseUrl(ROOT_URL)
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .client(client)
                         .build()
