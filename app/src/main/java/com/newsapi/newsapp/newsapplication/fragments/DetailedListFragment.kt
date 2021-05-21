@@ -77,7 +77,7 @@ class DetailedListFragment : Fragment(),
                         articleListObjects = t1.articles
                         updateView()
                     }
-                    Log.v("Error", "" + t2)
+                    Log.v("Error", "Ok Fine" + t2)
                 }
     }
 
