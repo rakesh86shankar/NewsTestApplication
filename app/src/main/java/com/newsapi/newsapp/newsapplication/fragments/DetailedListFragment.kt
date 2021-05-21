@@ -56,7 +56,7 @@ class DetailedListFragment : Fragment(),
 //            ArticleViewModel::class.java
 //        )
         val newsSourceId = DataSingleton.getInstance().newsPaperSources[newsPaperItemPositon ?: 0].id
-        Log.v("NewsSource>>>",">>"+newsSourceId)
+        Log.v("NewsSource>>>Code Cleanup",">>"+newsSourceId)
         /*
         articleViewModel.getArticleList("Hindu")?.observe(viewLifecycleOwner, Observer {
             it.let {
