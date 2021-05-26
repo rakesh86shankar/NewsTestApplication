@@ -21,8 +21,10 @@ import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.Source
 import com.newsapi.newsapp.newsapplication.model.SourceList
 import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel
+import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel1
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailedListFragment : Fragment(),
     RecyclerViewClickListener, LifecycleOwner {
@@ -30,7 +32,7 @@ class DetailedListFragment : Fragment(),
     var newsPaperItemPositon: Int? = 0
     var layoutManager: LinearLayoutManager? = null
     var articleListObjects: List<Article>? = emptyList()
-
+    private val mViewModel: ArticleViewModel1 by  viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,13 +55,18 @@ class DetailedListFragment : Fragment(),
         recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
         layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
-        recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
-        val articleViewModel = ViewModelProviders.of(this).get(
-            ArticleViewModel::class.java
-        )
-        val newsSourceId = DataSingleton.getInstance().newsPaperSources[newsPaperItemPositon ?: 0].id
-        Log.v("NewsSource>>>",">>"+newsSourceId)
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
+
+        val newsSourceId = DataSingleton.getInstance().newsPaperSources[newsPaperItemPositon
+                ?: 0].id
+        Log.v("NewsSource>>>", ">>" + newsSourceId)
+        mViewModel.getNewsArticleViaNewsPaperNameIdViaFlow(newsSourceId)
         /*
+        val articleViewModel = ViewModelProviders.of(this).get(
+                ArticleViewModel::class.java
+        )
+
+
         articleViewModel.getArticleList("Hindu")?.observe(viewLifecycleOwner, Observer {
             it.let {
                 if (!it?.articles.isNullOrEmpty()) {
@@ -67,9 +74,9 @@ class DetailedListFragment : Fragment(),
                     updateView()
                 }
             }
-        })
-         */
+        })*/
 
+        /*
         articleViewModel.getArticleListViaSingle(newsSourceId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { t1: NewsPaperList?, t2: Throwable? ->
@@ -79,6 +86,17 @@ class DetailedListFragment : Fragment(),
                     }
                     Log.v("Error", "Ok Fine" + t2)
                 }
+        */
+        mViewModel.newsListResponse.observe(viewLifecycleOwner, Observer<NewsPaperList> {
+            if (it != null) {
+                Log.v("Success>>>", "null")
+                articleListObjects = it.articles
+                updateView()
+            } else {
+                Log.v("Error>>>", "null")
+            }
+
+        })
     }
 
     private fun updateView() {
@@ -87,8 +105,6 @@ class DetailedListFragment : Fragment(),
                 NewsPaperListAdaper(articleListObjects?: emptyList(), it, this)
             recyclerView.adapter = newsPaperAdapter
         }
-
-
     }
 
     override fun recyclerViewListClicked(

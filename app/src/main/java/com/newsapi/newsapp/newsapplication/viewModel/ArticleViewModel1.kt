@@ -7,15 +7,20 @@ import com.newsapi.newsapp.newsapplication.manager.NewsManager
 import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.SourceList
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class ArticleViewModel1 constructor(private val newsManager: NewsManager) : ViewModel() {
-
-    private val compositeDisposable = CompositeDisposable()
-    val newsApiResponse = MutableLiveData<NewsPaperList>()
+    val sourceListResponse =  MutableLiveData<SourceList>()
+    val newsListResponse =  MutableLiveData<NewsPaperList>()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO);
 
     init {
         Log.v("Test Check>>>",">>>>")
+        getNewsFeedFromSourcesViaFlow()
     }
 
     fun getNewsFeedFromSources(): Single<SourceList> {
@@ -26,7 +31,23 @@ class ArticleViewModel1 constructor(private val newsManager: NewsManager) : View
         return newsManager.getArticlesFromSourceName(newsPaperId)
     }
 
+    private fun getNewsFeedFromSourcesViaFlow() {
+        coroutineScope.launch {
+            newsManager.getNewsFeedFromSourcesViaFlow().apply {
+                sourceListResponse.postValue(this.first())
+            }
+        }
+    }
+
+    fun getNewsArticleViaNewsPaperNameIdViaFlow(newsPaperId: String) {
+        coroutineScope.launch {
+            newsManager.getArticlesFromSourceNameViaFlow(newsPaperId).apply {
+                newsListResponse.postValue(this.first())
+            }
+        }
+    }
+
     fun onDetach() {
-        compositeDisposable.dispose()
+        coroutineScope.cancel()
     }
 }

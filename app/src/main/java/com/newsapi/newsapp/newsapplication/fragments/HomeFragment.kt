@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +19,11 @@ import com.newsapi.newsapp.newsapplication.model.SourceList
 import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel1
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(), RecyclerViewClickListener {
+class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
     private lateinit var recyclerView: RecyclerView
     var layoutManager: LinearLayoutManager? = null
     var newsPaperList: List<Source>? = emptyList()
@@ -48,14 +52,24 @@ class HomeFragment : Fragment(), RecyclerViewClickListener {
 
 
     private fun listenToViewModel() {
-        mViewModel.getNewsFeedFromSources().subscribeOn(Schedulers.io())
+      /*  mViewModel.getNewsFeedFromSources().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe { t1: SourceList?, t2: Throwable? ->
             if (t1 != null) {
                 newsPaperList = t1.sources
                 updateView()
             }
             Log.v("Error", "" + t2)
-        }
+        }*/
+        mViewModel.sourceListResponse.observe(viewLifecycleOwner,Observer<SourceList>{
+            if (it != null) {
+                Log.v("Success>>>", "null")
+                newsPaperList = it.sources
+                updateView()
+            } else {
+                Log.v("Error>>>", "null")
+            }
+
+        })
     }
 
     fun updateView() {
