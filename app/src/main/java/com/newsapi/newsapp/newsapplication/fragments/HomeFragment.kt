@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.newsapi.newsapp.newsapplication.DataSingleton
 import com.newsapi.newsapp.newsapplication.Listeners.RecyclerViewClickListener
 import com.newsapi.newsapp.newsapplication.R
 import com.newsapi.newsapp.newsapplication.adapters.NewsPaperAdapter
@@ -47,7 +48,6 @@ class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
         recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
         recyclerView.addItemDecoration( DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         listenToViewModel()
-        //updateView()
     }
 
 
@@ -65,6 +65,7 @@ class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
                 Log.v("Success>>>", "null")
                 newsPaperList = it.sources
                 updateView()
+                DataSingleton.getInstance().setNewsPaperSources(it.sources?: emptyList())
             } else {
                 Log.v("Error>>>", "null")
             }
@@ -94,7 +95,7 @@ class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
             android.R.anim.fade_in,
             android.R.anim.fade_out
         )
-        fragmentTransaction.replace(R.id.frame_layout, detailedListFragment)
+        fragmentTransaction.replace(R.id.frame_layout, detailedListFragment).addToBackStack(null)
         fragmentTransaction.commitAllowingStateLoss()
     }
 }
