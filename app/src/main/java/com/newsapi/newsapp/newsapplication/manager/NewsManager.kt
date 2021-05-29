@@ -16,4 +16,8 @@ interface NewsManager {
 
     fun getArticlesFromSourceNameViaFlow(newsPaperNameId: String): Flow<NewsPaperList>
 
+    fun getNewsFeedFromSourcesViaFlow1(): SourceList
+
+    fun getArticlesFromSourceNameViaFlow1(newsPaperNameId: String): NewsPaperList
+
 }

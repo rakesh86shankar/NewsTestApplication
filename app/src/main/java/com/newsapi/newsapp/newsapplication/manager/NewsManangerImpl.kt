@@ -18,6 +18,13 @@ class NewsManagerImpl(
 
     override fun getArticlesFromSourceNameViaFlow(newsPaperNameId: String) = _newsRepo.getArticlesFromSourceNameViaFlow(newsPaperNameId)
 
+    override fun getNewsFeedFromSourcesViaFlow1(): SourceList {
+        return _newsRepo.getNewsFeedFromSourcesViaFlow1()
+    }
+
+    override fun getArticlesFromSourceNameViaFlow1(newsPaperNameId: String): NewsPaperList {
+        return _newsRepo.getArticlesFromSourceNameViaFlow1(newsPaperNameId)
+    }
 
 
 }

@@ -67,13 +67,14 @@ class SplashScreen : AppCompatActivity() {
                 }
             })*/
 
-            articleViewModel.getNewsPaperSourcesSingle().subscribe {
-                t1: SourceList?, t2: Throwable? ->
-                if (t1 != null) {
-                    navigateToView(t1.sources ?: emptyList())
-                }
-                Log.v("Error",""+t2)
-            }
+//            articleViewModel.getNewsPaperSourcesSingle().subscribe {
+//                t1: SourceList?, t2: Throwable? ->
+//                if (t1 != null) {
+//                    navigateToView(t1.sources ?: emptyList())
+//                }
+//                Log.v("Error",""+t2)
+//            }
+            navigateToView(emptyList())
         } catch (ex: Exception) {
             Log.v("Exception in downloading from model", ex.message!!)
 

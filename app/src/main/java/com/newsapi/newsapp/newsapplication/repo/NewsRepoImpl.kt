@@ -7,6 +7,7 @@ import com.newsapi.newsapp.newsapplication.network.APIServices
 import com.newsapi.newsapp.newsapplication.network.APIServices.Companion.API_KEY
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -36,6 +37,10 @@ class NewsRepoImpl(
             }
         }
     }
+
+    override fun getArticlesFromSourceNameViaFlow1(newsPaperNameId: String): NewsPaperList =  runBlocking { withContext(Dispatchers.IO) {networkClient.newsService.getArticleListViaFlow(newsPaperNameId, API_KEY)} }
+
+    override fun getNewsFeedFromSourcesViaFlow1():SourceList = runBlocking { withContext(Dispatchers.IO) {networkClient.newsService.getNewsPaperSourcesViaFlow(API_KEY)} }
 }
 
 //    private fun putNewsInDb(newsPaperList: NewsPaperList){

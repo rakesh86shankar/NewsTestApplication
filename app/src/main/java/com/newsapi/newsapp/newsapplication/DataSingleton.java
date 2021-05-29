@@ -35,7 +35,7 @@ public class DataSingleton {
         return getInstance();
     }
 
-    protected void setNewsPaperSources(List<Source> newsPaperSources) {
+    public void setNewsPaperSources(List<Source> newsPaperSources) {
         newsPaperArray = newsPaperSources;
     }
 
