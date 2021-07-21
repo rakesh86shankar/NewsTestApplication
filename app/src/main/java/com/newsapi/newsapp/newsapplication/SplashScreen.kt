@@ -74,7 +74,7 @@ class SplashScreen : AppCompatActivity() {
 //                }
 //                Log.v("Error",""+t2)
 //            }
-            navigateToView(emptyList())
+            navigateToView1(emptyList())
         } catch (ex: Exception) {
             Log.v("Exception in downloading from model", ex.message!!)
 
@@ -84,6 +84,12 @@ class SplashScreen : AppCompatActivity() {
     fun navigateToView(newsPaperSources: List<Source?>?) {
         DataSingleton.getInstance().newsPaperSources = newsPaperSources
         val i = Intent(this@SplashScreen, NewAPIActivity::class.java)
+        startActivity(i)
+    }
+
+    fun navigateToView1(newsPaperSources: List<Source?>?) {
+        DataSingleton.getInstance().newsPaperSources = newsPaperSources
+        val i = Intent(this@SplashScreen, HomeActivity::class.java)
         startActivity(i)
     }
 

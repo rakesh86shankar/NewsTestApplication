@@ -5,38 +5,58 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.newsapi.newsapp.newsapplication.ArticleViewModelFactory
 import com.newsapi.newsapp.newsapplication.DataSingleton
 import com.newsapi.newsapp.newsapplication.Listeners.RecyclerViewClickListener
 import com.newsapi.newsapp.newsapplication.R
 import com.newsapi.newsapp.newsapplication.adapters.NewsPaperAdapter
+import com.newsapi.newsapp.newsapplication.di.dataModule
+import com.newsapi.newsapp.newsapplication.manager.NewsManager
+import com.newsapi.newsapp.newsapplication.manager.NewsManagerImpl
 import com.newsapi.newsapp.newsapplication.model.Source
 import com.newsapi.newsapp.newsapplication.model.SourceList
+import com.newsapi.newsapp.newsapplication.network.APIServices
+import com.newsapi.newsapp.newsapplication.repo.NewsRepoImpl
+import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel
 import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel1
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.newsapi.newsapp.newsapplication.viewModel.ArticleViewModel2
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
+class HomeFragment : Fragment(), RecyclerViewClickListener {
     private lateinit var recyclerView: RecyclerView
     var layoutManager: LinearLayoutManager? = null
     var newsPaperList: List<Source>? = emptyList()
     private val mViewModel: ArticleViewModel1 by  viewModel()
-
+    private lateinit var fragmentView: View
+    private lateinit var navHostFragment: NavController
+    private lateinit var articleViewModelFactory: ArticleViewModelFactory
+    private val newsManager:NewsManager  = NewsManagerImpl(NewsRepoImpl(APIServices("https://newsapi.org/")))
+    private lateinit var articleViewModel2: ArticleViewModel2
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.layout_news_paper, container, false)
-        return view
+    ): View {
+        fragmentView = inflater.inflate(R.layout.layout_news_paper, container, false)
+        initializeViewModel()
+        navHostFragment = NavHostFragment.findNavController(this)
+        return fragmentView
+    }
+
+
+    private fun initializeViewModel(){
+        articleViewModelFactory = ArticleViewModelFactory(newsManager)
+        articleViewModel2 =  ViewModelProvider(this, articleViewModelFactory).get(ArticleViewModel2::class.java)
     }
 
     override fun onViewCreated(
@@ -60,7 +80,7 @@ class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
             }
             Log.v("Error", "" + t2)
         }*/
-        mViewModel.sourceListResponse.observe(viewLifecycleOwner,Observer<SourceList>{
+        articleViewModel2.sourceListResponse.observe(viewLifecycleOwner,Observer<SourceList>{
             if (it != null) {
                 Log.v("Success>>>", "null")
                 newsPaperList = it.sources
@@ -85,17 +105,19 @@ class HomeFragment : Fragment(), RecyclerViewClickListener,LifecycleOwner {
         newsPaperList = newsPaperObjects
     }
 
-    override fun recyclerViewListClicked(v: View?, position: Int) {
+    override fun recyclerViewListClicked(v: View, position: Int) {
         Log.v("ListView Recyclered>>>", "" + position)
-        val detailedListFragment = DetailedListFragment()
-        detailedListFragment.setNewsPaperSources(position)
-        val fragmentTransaction =
-            parentFragmentManager.beginTransaction()
-        fragmentTransaction.setCustomAnimations(
-            android.R.anim.fade_in,
-            android.R.anim.fade_out
-        )
-        fragmentTransaction.replace(R.id.frame_layout, detailedListFragment).addToBackStack(null)
-        fragmentTransaction.commitAllowingStateLoss()
+//        val detailedListFragment = DetailedListFragment()
+//        detailedListFragment.setNewsPaperSources(position)
+//        val fragmentTransaction =
+//            parentFragmentManager.beginTransaction()
+//        fragmentTransaction.setCustomAnimations(
+//            android.R.anim.fade_in,
+//            android.R.anim.fade_out
+//        )
+//        fragmentTransaction.replace(R.id.frame_layout, detailedListFragment).addToBackStack(null)
+//        fragmentTransaction.commitAllowingStateLoss()
+        val bundle = bundleOf("position" to position)
+        navHostFragment.navigate(R.id.action_main_fragment_to_second_fragment,bundle)
     }
 }

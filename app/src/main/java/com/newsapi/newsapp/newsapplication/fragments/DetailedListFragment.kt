@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +53,8 @@ class DetailedListFragment : Fragment(),
                 getParentFragmentManager().popBackStack()
             }
         })
+        val position = arguments?.getInt("position") ?: 0
+        setNewsPaperSources(position)
         recyclerView = view.findViewById(R.id.list_item_View) as RecyclerView
         layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
@@ -60,7 +63,10 @@ class DetailedListFragment : Fragment(),
         val newsSourceId = DataSingleton.getInstance().newsPaperSources[newsPaperItemPositon
                 ?: 0].id
         Log.v("NewsSource>>>", ">>" + newsSourceId)
-        mViewModel.getNewsArticleViaNewsPaperNameIdViaFlow(newsSourceId)
+        lifecycleScope.launchWhenCreated {
+            mViewModel.getNewsArticleViaNewsPaperNameIdViaFlow(newsSourceId)
+        }
+
         /*
         val articleViewModel = ViewModelProviders.of(this).get(
                 ArticleViewModel::class.java
@@ -108,7 +114,7 @@ class DetailedListFragment : Fragment(),
     }
 
     override fun recyclerViewListClicked(
-            v: View?,
+            v: View,
             position: Int
     ) {
     }

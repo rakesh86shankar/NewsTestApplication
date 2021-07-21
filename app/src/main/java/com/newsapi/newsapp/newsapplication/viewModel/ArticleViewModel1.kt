@@ -9,12 +9,9 @@ import com.newsapi.newsapp.newsapplication.model.NewsPaperList
 import com.newsapi.newsapp.newsapplication.model.SourceList
 import com.newsapi.newsapp.newsapplication.network.apiResult
 import io.reactivex.Single
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class ArticleViewModel1 constructor(private val newsManager: NewsManager) : ViewModel() {
     val sourceListResponse =  MutableLiveData<SourceList>()

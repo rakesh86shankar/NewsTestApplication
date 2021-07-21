@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <id name = "action_main_fragment_to_second_fragment"/>
+    <id name = "action_second_fragment_to_third_fragment"/>
+</resources>
