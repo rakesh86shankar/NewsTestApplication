@@ -62,8 +62,8 @@ class DetailedListFragment : Fragment(),
 //
         articleViewModel.getArticleList("Hindu")?.observe(viewLifecycleOwner, Observer {
                     it.let {
-                        if(it.articles.isNullOrEmpty() == false){
-                            articleListObjects = it.articles
+                        if(it?.articles.isNullOrEmpty() == false){
+                            articleListObjects = it?.articles
                             updateView()
                         }
                     }
