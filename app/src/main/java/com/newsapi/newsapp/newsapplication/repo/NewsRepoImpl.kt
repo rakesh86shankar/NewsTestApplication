@@ -10,9 +10,10 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class NewsRepoImpl(
-        private val networkClient: APIServices
+class NewsRepoImpl @Inject constructor(
+        val networkClient: APIServices
         //,private val db:NewsAppDataBase
 ) : NewsRepo {
 

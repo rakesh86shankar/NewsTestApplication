@@ -20,7 +20,7 @@ import com.newsapi.newsapp.newsapplication.DataSingleton
 import com.newsapi.newsapp.newsapplication.Listeners.RecyclerViewClickListener
 import com.newsapi.newsapp.newsapplication.R
 import com.newsapi.newsapp.newsapplication.adapters.NewsPaperAdapter
-import com.newsapi.newsapp.newsapplication.di.dataModule
+import com.newsapi.newsapp.newsapplication.di.DataModule
 import com.newsapi.newsapp.newsapplication.manager.NewsManager
 import com.newsapi.newsapp.newsapplication.manager.NewsManagerImpl
 import com.newsapi.newsapp.newsapplication.model.Source

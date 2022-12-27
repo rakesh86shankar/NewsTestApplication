@@ -12,8 +12,9 @@ import io.reactivex.Single
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
-class ArticleViewModel1 constructor(private val newsManager: NewsManager) : ViewModel() {
+class ArticleViewModel1 @Inject constructor(private val newsManager: NewsManager) : ViewModel() {
     val sourceListResponse =  MutableLiveData<SourceList>()
     val newsListResponse =  MutableLiveData<NewsPaperList>()
     private val coroutineScope = CoroutineScope(Dispatchers.IO);
